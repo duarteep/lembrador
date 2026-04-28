@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}{{ paciente.nome }} - Agendador de Consultas{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>👥 {{ paciente.nome }}</h1>
+    <a href="{{ url_for('listar_pacientes') }}" class="btn btn-secondary">← Voltar</a>
+</div>
+
+<div class="detail-card">
+    <div class="card-section">
+        <h2>Informações Pessoais</h2>
+        <div class="info-grid">
+            <div class="info-item">
+                <label>CPF</label>
+                <p><code>{{ paciente.cpf }}</code></p>
+            </div>
+            <div class="info-item">
+                <label>Telefone</label>
+                <p>{{ paciente.telefone }}</p>
+            </div>
+            <div class="info-item">
+                <label>Email</label>
+                <p>{{ paciente.email if paciente.email else 'Não informado' }}</p>
+            </div>
+            <div class="info-item">
+                <label>Data de Cadastro</label>
+                <p>{{ paciente.data_criacao.strftime('%d/%m/%Y') if paciente.data_criacao else 'N/A' }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-section">
+        <h2>Histórico de Consultas</h2>
+        {% if consultas %}
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Data/Hora</th>
+                            <th>Profissional</th>
+                            <th>Motivo</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for consulta in consultas %}
+                            <tr>
+                                <td><strong>{{ consulta.data_hora }}</strong></td>
+                                <td>{{ consulta.profissional }}</td>
+                                <td>{{ consulta.motivo }}</td>
+                                <td><span class="badge status-{{ consulta.status }}">{{ consulta.status }}</span></td>
+                                <td>
+                                    <a href="{{ url_for('detalhe_consulta', consulta_id=consulta.id) }}" class="btn-small">
+                                        Ver
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p>Nenhuma consulta cadastrada para este paciente</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

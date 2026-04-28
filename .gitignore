@@ -1,0 +1,36 @@
+# Banco de dados
+*.db
+*.sqlite
+*.sqlite3
+
+# Cache Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Ambiente virtual
+venv/
+env/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+.windows-build-tools/
+
+# Logs
+*.log
+
+# Arquivos temporários
+*.tmp
+*.temp
+.tmp/

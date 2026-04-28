@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Consultas - Agendador de Consultas{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>📋 Consultas</h1>
+    <a href="{{ url_for('nova_consulta') }}" class="btn btn-primary">+ Agendar Consulta</a>
+</div>
+
+{% if consultas %}
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Data/Hora</th>
+                    <th>Paciente</th>
+                    <th>Profissional</th>
+                    <th>Motivo</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for consulta in consultas %}
+                    <tr>
+                        <td><strong>{{ consulta.data_hora }}</strong></td>
+                        <td>{{ consulta.paciente }}</td>
+                        <td>{{ consulta.profissional }}</td>
+                        <td>{{ consulta.motivo }}</td>
+                        <td><span class="badge status-{{ consulta.status }}">{{ consulta.status }}</span></td>
+                        <td>
+                            <a href="{{ url_for('detalhe_consulta', consulta_id=consulta.id) }}" class="btn-small">
+                                Ver Detalhes
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="empty-state">
+        <span class="empty-icon">📭</span>
+        <p>Nenhuma consulta cadastrada</p>
+        <a href="{{ url_for('nova_consulta') }}" class="btn btn-primary">Agendar Primeira Consulta</a>
+    </div>
+{% endif %}
+{% endblock %}

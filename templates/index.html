@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Agendador de Consultas - Home{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <div class="hero-content">
+        <h1>Bem-vindo ao Agendador de Consultas</h1>
+        <p>Gerencie suas consultas médicas de forma simples e eficiente</p>
+        <div class="hero-buttons">
+            <a href="{{ url_for('nova_consulta') }}" class="btn btn-primary">
+                📅 Agendar Consulta
+            </a>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">
+                📊 Ver Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+
+<section class="stats-grid">
+    <div class="stat-card">
+        <span class="stat-icon">👥</span>
+        <h3>Pacientes</h3>
+        <p class="stat-number">{{ stats.total_pacientes }}</p>
+        <a href="{{ url_for('listar_pacientes') }}">Ver lista →</a>
+    </div>
+    <div class="stat-card">
+        <span class="stat-icon">👨‍⚕️</span>
+        <h3>Profissionais</h3>
+        <p class="stat-number">{{ stats.total_profissionais }}</p>
+        <a href="{{ url_for('listar_profissionais') }}">Ver lista →</a>
+    </div>
+    <div class="stat-card">
+        <span class="stat-icon">📋</span>
+        <h3>Consultas</h3>
+        <p class="stat-number">{{ stats.total_consultas }}</p>
+        <a href="{{ url_for('listar_consultas') }}">Ver lista →</a>
+    </div>
+    <div class="stat-card">
+        <span class="stat-icon">⏰</span>
+        <h3>Próximas 7 dias</h3>
+        <p class="stat-number">{{ stats.proximas_consultas }}</p>
+        <a href="{{ url_for('dashboard') }}">Ver agenda →</a>
+    </div>
+</section>
+
+<section class="features">
+    <h2>Funcionalidades Principais</h2>
+    <div class="features-grid">
+        <div class="feature-item">
+            <span class="feature-icon">🏥</span>
+            <h3>Gerenciamento de Pacientes</h3>
+            <p>Cadastre e organize informações de pacientes com facilidade</p>
+        </div>
+        <div class="feature-item">
+            <span class="feature-icon">👨‍⚕️</span>
+            <h3>Profissionais de Saúde</h3>
+            <p>Mantenha cadastro de médicos e especialistas</p>
+        </div>
+        <div class="feature-item">
+            <span class="feature-icon">📅</span>
+            <h3>Agendamento</h3>
+            <p>Agende consultas com data, hora e motivo</p>
+        </div>
+        <div class="feature-item">
+            <span class="feature-icon">🔔</span>
+            <h3>Acompanhamento</h3>
+            <p>Gerencie status e adicione notas às consultas</p>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Pacientes - Agendador de Consultas{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>👥 Pacientes</h1>
+    <a href="{{ url_for('novo_paciente') }}" class="btn btn-primary">+ Novo Paciente</a>
+</div>
+
+{% if pacientes %}
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>CPF</th>
+                    <th>Telefone</th>
+                    <th>Email</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for paciente in pacientes %}
+                    <tr>
+                        <td><strong>{{ paciente.nome }}</strong></td>
+                        <td><code>{{ paciente.cpf }}</code></td>
+                        <td>{{ paciente.telefone }}</td>
+                        <td>{{ paciente.email }}</td>
+                        <td>
+                            <a href="{{ url_for('detalhe_paciente', paciente_id=paciente.id) }}" class="btn-small">
+                                Ver Detalhes
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="empty-state">
+        <span class="empty-icon">👤</span>
+        <p>Nenhum paciente cadastrado</p>
+        <a href="{{ url_for('novo_paciente') }}" class="btn btn-primary">Cadastrar Primeiro Paciente</a>
+    </div>
+{% endif %}
+{% endblock %}

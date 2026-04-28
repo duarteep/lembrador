@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block title %}{{ consulta.id }} - Agendador de Consultas{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>📋 Detalhes da Consulta</h1>
+    <a href="{{ url_for('listar_consultas') }}" class="btn btn-secondary">← Voltar</a>
+</div>
+
+<div class="detail-card">
+    <div class="card-section">
+        <h2>Informações da Consulta</h2>
+        <div class="info-grid">
+            <div class="info-item">
+                <label>Paciente</label>
+                <p>
+                    <a href="{{ url_for('detalhe_paciente', paciente_id=paciente.id) }}">
+                        {{ paciente.nome }}
+                    </a>
+                </p>
+            </div>
+            <div class="info-item">
+                <label>Profissional</label>
+                <p>
+                    <a href="{{ url_for('detalhe_profissional', prof_id=profissional.id) }}">
+                        {{ profissional.nome }} ({{ profissional.especialidade }})
+                    </a>
+                </p>
+            </div>
+            <div class="info-item">
+                <label>Data/Hora</label>
+                <p><strong>{{ consulta.data_hora.strftime('%d/%m/%Y às %H:%M') }}</strong></p>
+            </div>
+            <div class="info-item">
+                <label>Status</label>
+                <p>
+                    <span class="badge status-{{ consulta.status.value }}">
+                        {{ consulta.status.value.upper() }}
+                    </span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-section">
+        <h2>Motivo</h2>
+        <p>{{ consulta.motivo }}</p>
+    </div>
+
+    <div class="card-section">
+        <h2>Ações</h2>
+        <div class="action-buttons">
+            <button onclick="atualizarStatus('confirmada')" class="btn btn-small">✓ Confirmar</button>
+            <button onclick="atualizarStatus('realizada')" class="btn btn-small">✓ Marcar como Realizada</button>
+            <button onclick="atualizarStatus('cancelada')" class="btn btn-small btn-danger">✗ Cancelar</button>
+            <button onclick="deletarConsulta()" class="btn btn-small btn-danger">🗑️ Deletar</button>
+        </div>
+    </div>
+
+    <div class="card-section">
+        <h2>Notas</h2>
+        <textarea id="notasTextarea" class="form-control" rows="4" 
+                  placeholder="Adicione notas sobre esta consulta">{{ consulta.notas }}</textarea>
+        <button onclick="salvarNotas()" class="btn btn-primary" style="margin-top: 10px;">💾 Salvar Notas</button>
+    </div>
+</div>
+
+<script>
+const consultaId = '{{ consulta.id }}';
+
+function atualizarStatus(novoStatus) {
+    if (!confirm(`Deseja alterar o status para "${novoStatus}"?`)) return;
+    
+    fetch(`/api/consultas/${consultaId}/status`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ status: novoStatus })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.sucesso) {
+            alert('Status atualizado!');
+            location.reload();
+        } else {
+            alert('Erro: ' + data.erro);
+        }
+    })
+    .catch(error => console.error('Erro:', error));
+}
+
+function salvarNotas() {
+    const notas = document.getElementById('notasTextarea').value;
+    
+    fetch(`/api/consultas/${consultaId}/notas`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ notas: notas })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.sucesso) {
+            alert('Notas salvas!');
+        } else {
+            alert('Erro: ' + data.erro);
+        }
+    })
+    .catch(error => console.error('Erro:', error));
+}
+
+function deletarConsulta() {
+    if (!confirm('Tem certeza que deseja deletar esta consulta? Esta ação é irreversível!')) return;
+    
+    fetch(`/api/consultas/${consultaId}/deletar`, {
+        method: 'DELETE'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.sucesso) {
+            alert('Consulta deletada!');
+            window.location.href = '{{ url_for("listar_consultas") }}';
+        } else {
+            alert('Erro: ' + data.erro);
+        }
+    })
+    .catch(error => console.error('Erro:', error));
+}
+</script>
+{% endblock %}

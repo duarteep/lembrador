@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Agendador de Consultas{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>📊 Dashboard</h1>
+    <p>Acompanhe as próximas consultas</p>
+</div>
+
+<section class="stats-grid">
+    <div class="stat-card">
+        <span class="stat-icon">👥</span>
+        <h3>Pacientes</h3>
+        <p class="stat-number">{{ stats.total_pacientes }}</p>
+    </div>
+    <div class="stat-card">
+        <span class="stat-icon">👨‍⚕️</span>
+        <h3>Profissionais</h3>
+        <p class="stat-number">{{ stats.total_profissionais }}</p>
+    </div>
+    <div class="stat-card">
+        <span class="stat-icon">📋</span>
+        <h3>Total Consultas</h3>
+        <p class="stat-number">{{ stats.total_consultas }}</p>
+    </div>
+    <div class="stat-card">
+        <span class="stat-icon">⏰</span>
+        <h3>Próximos 7 dias</h3>
+        <p class="stat-number">{{ stats.proximas_consultas }}</p>
+    </div>
+</section>
+
+<section class="dashboard-section">
+    <h2>📅 Próximas Consultas (7 dias)</h2>
+    
+    {% if consultas %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Data/Hora</th>
+                        <th>Paciente</th>
+                        <th>Profissional</th>
+                        <th>Motivo</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for consulta in consultas %}
+                        <tr>
+                            <td><strong>{{ consulta.data_hora }}</strong></td>
+                            <td>{{ consulta.paciente }}</td>
+                            <td>{{ consulta.profissional }}</td>
+                            <td>{{ consulta.motivo }}</td>
+                            <td><span class="badge status-{{ consulta.status }}">{{ consulta.status }}</span></td>
+                            <td>
+                                <a href="{{ url_for('detalhe_consulta', consulta_id=consulta.id) }}" class="btn-small">
+                                    Ver Detalhes
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <span class="empty-icon">📭</span>
+            <p>Nenhuma consulta nos próximos 7 dias</p>
+            <a href="{{ url_for('nova_consulta') }}" class="btn btn-primary">Agendar Nova Consulta</a>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}
