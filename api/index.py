@@ -3,7 +3,8 @@ import os
 import sys
 from flask import Flask, render_template, request, jsonify, redirect, url_for, flash
 
-ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# No Vercel, o projeto está em /var/task
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, ROOT_DIR)
 
 # Debug: print paths
