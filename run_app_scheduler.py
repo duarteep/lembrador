@@ -1,7 +1,7 @@
 """Executa o Flask e o scheduler de notificações em paralelo."""
 
 import threading
-from app import app
+from index import app
 from notificacao_scheduler import NotificacaoScheduler
 
 

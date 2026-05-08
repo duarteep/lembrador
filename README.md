@@ -246,7 +246,7 @@ Acesse: http://localhost:5000
 
 ### Em Rede
 ```bash
-python -c "from app import app; app.run(host='0.0.0.0', port=5000)"
+python -c "from index import app; app.run(host='0.0.0.0', port=5000)"
 ```
 Acesse: http://IP_DO_SERVIDOR:5000
 
