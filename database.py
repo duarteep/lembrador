@@ -15,14 +15,14 @@ from models import Paciente, Profissional, Consulta, StatusConsulta, Notificacao
 class Database:
     """Gerencia a conexão e operações com o banco de dados PostgreSQL."""
     
-    def __init__(self, DATABASE_SUPABASE_URL=None):
-        self.DATABASE_SUPABASE_URL = DATABASE_SUPABASE_URL or os.environ.get('DATABASE_SUPABASE_URL')
+    def __init__(self, DATABASE_URL=None):
+        self.DATABASE_URL = DATABASE_URL or os.environ.get('DATABASE_URL')
         self.criar_tabelas()
     
     def _conectar(self):
         """Cria uma conexão com o banco de dados."""
-        if self.DATABASE_SUPABASE_URL:
-            return psycopg2.connect(self.DATABASE_SUPABASE_URL)
+        if self.DATABASE_URL:
+            return psycopg2.connect(self.DATABASE_URL)
 
         return psycopg2.connect(
             host=DATABASE_HOST,

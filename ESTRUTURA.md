@@ -40,7 +40,7 @@ agendador-consultas/
 │       └── script.js              # JavaScript (AJAX, validações)
 │
 ├── 🗄️ Banco de Dados
-│   └── PostgreSQL                # Conexão configurada em config.py ou DATABASE_SUPABASE_URL
+│   └── PostgreSQL                # Conexão configurada em config.py ou DATABASE_URL
 │       ├── pacientes             # Tabela de pacientes
 │       ├── profissionais         # Tabela de profissionais
 │       └── consultas             # Tabela de consultas
