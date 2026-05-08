@@ -1,17 +1,5 @@
 """Aplicação Flask para Agendador de Consultas Web."""
-import os
-import sys
 from flask import Flask, render_template, request, jsonify, redirect, url_for, flash
-
-# No Vercel, o projeto está em /var/task
-ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, ROOT_DIR)
-
-# Debug: print paths
-print(f"ROOT_DIR: {ROOT_DIR}")
-print(f"sys.path: {sys.path}")
-print(f"Current dir: {os.getcwd()}")
-
 from database import Database
 from models import Paciente, Profissional, Consulta, StatusConsulta, Notificacao
 from utils import (
@@ -22,15 +10,9 @@ from datetime import datetime
 import json
 import math
 
-app = Flask(
-    __name__,
-    template_folder=os.path.join(ROOT_DIR, 'templates'),
-    static_folder=os.path.join(ROOT_DIR, 'static'),
-    static_url_path='/static'
-)
+app = Flask(__name__)
 app.secret_key = 'seu-chave-secreta-aqui'  # Substitua por uma chave segura em produção
 db = Database()
-
 
 # ===== ROTAS PRINCIPAIS =====
 
