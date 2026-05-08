@@ -6,6 +6,11 @@ from flask import Flask, render_template, request, jsonify, redirect, url_for, f
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT_DIR)
 
+# Debug: print paths
+print(f"ROOT_DIR: {ROOT_DIR}")
+print(f"sys.path: {sys.path}")
+print(f"Current dir: {os.getcwd()}")
+
 from database import Database
 from models import Paciente, Profissional, Consulta, StatusConsulta, Notificacao
 from utils import (
