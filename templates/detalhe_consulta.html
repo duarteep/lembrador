@@ -64,10 +64,71 @@
                   placeholder="Adicione notas sobre esta consulta">{{ consulta.notas }}</textarea>
         <button onclick="salvarNotas()" class="btn btn-primary" style="margin-top: 10px;">💾 Salvar Notas</button>
     </div>
+
+    <div class="card-section">
+        <h2>Notificações</h2>
+        {% if notificacoes %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Data/Hora</th>
+                    <th>Título</th>
+                    <th>Ferramenta</th>
+                    <th>Tipo</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for n in notificacoes %}
+                <tr>
+                    <td>{{ n.agendamento.strftime('%d/%m/%Y %H:%M') if n.agendamento else '' }}</td>
+                    <td>{{ n.titulo }}</td>
+                    <td>{{ n.ferramenta.upper() }}</td>
+                    <td>{{ n.tipo }}</td>
+                    <td>
+                        <span class="badge status-{{ n.status }}">
+                            {{ n.status.upper() }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if n.status == 'agendada' %}
+                        <button onclick="cancelarNotificacao('{{ n.id }}')" class="btn btn-small btn-danger">Cancelar</button>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>Nenhuma notificação agendada para esta consulta.</p>
+        {% endif %}
+    </div>
 </div>
 
 <script>
 const consultaId = '{{ consulta.id }}';
+
+function cancelarNotificacao(notificacaoId) {
+    if (!confirm('Deseja realmente cancelar esta notificação?')) return;
+    
+    fetch(`/api/notificacoes/${notificacaoId}/cancelar`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.sucesso) {
+            alert('Notificação cancelada!');
+            location.reload();
+        } else {
+            alert('Erro: ' + data.erro);
+        }
+    })
+    .catch(error => console.error('Erro:', error));
+}
 
 function atualizarStatus(novoStatus) {
     if (!confirm(`Deseja alterar o status para "${novoStatus}"?`)) return;

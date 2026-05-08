@@ -15,10 +15,13 @@
 
     <div class="form-group">
         <label for="especialidade">Especialidade *</label>
-        <input type="text" id="especialidade" name="especialidade" 
-               placeholder="ex: Cardiologia, Dentista, Psicólogo" required class="form-control">
+        <select id="especialidade" name="especialidade" required class="form-control">
+            <option value="">Selecione uma especialidade</option>
+            {% for esp in especialidades %}
+            <option value="{{ esp }}">{{ esp }}</option>
+            {% endfor %}
+        </select>
     </div>
-
     <div class="form-group">
         <label for="crm">CRM/CREA *</label>
         <input type="text" id="crm" name="crm" placeholder="ex: 123456/SP" required class="form-control">

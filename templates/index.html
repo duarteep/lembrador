@@ -5,8 +5,8 @@
 {% block content %}
 <div class="hero">
     <div class="hero-content">
-        <h1>Bem-vindo ao Agendador de Consultas</h1>
-        <p>Gerencie suas consultas médicas de forma simples e eficiente</p>
+        <h1>Bem-vindo ao Lembrador de Consultas</h1>
+        <p>Projeto Integrador Univesp</p>
         <div class="hero-buttons">
             <a href="{{ url_for('nova_consulta') }}" class="btn btn-primary">
                 📅 Agendar Consulta
@@ -18,30 +18,67 @@
     </div>
 </div>
 
-<section class="stats-grid">
-    <div class="stat-card">
-        <span class="stat-icon">👥</span>
-        <h3>Pacientes</h3>
-        <p class="stat-number">{{ stats.total_pacientes }}</p>
-        <a href="{{ url_for('listar_pacientes') }}">Ver lista →</a>
+<section class="stats-grid" style="
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+">
+    <div class="stat-card" style="
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.6rem 1rem;
+        flex: 1 1 160px;
+        min-width: 140px;
+    ">
+        <span class="stat-icon" style="font-size: 1.2rem; line-height: 1;">👥</span>
+        <div style="display: flex; flex-direction: column; line-height: 1.2;">
+            <span style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.65; font-weight: 600;">Pacientes</span>
+            <span class="stat-number" style="font-size: 1.3rem; font-weight: 700; margin: 0;">{{ stats.total_pacientes }}</span>
+        </div>
     </div>
-    <div class="stat-card">
-        <span class="stat-icon">👨‍⚕️</span>
-        <h3>Profissionais</h3>
-        <p class="stat-number">{{ stats.total_profissionais }}</p>
-        <a href="{{ url_for('listar_profissionais') }}">Ver lista →</a>
+    <div class="stat-card" style="
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.6rem 1rem;
+        flex: 1 1 160px;
+        min-width: 140px;
+    ">
+        <span class="stat-icon" style="font-size: 1.2rem; line-height: 1;">👨‍⚕️</span>
+        <div style="display: flex; flex-direction: column; line-height: 1.2;">
+            <span style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.65; font-weight: 600;">Profissionais</span>
+            <span class="stat-number" style="font-size: 1.3rem; font-weight: 700; margin: 0;">{{ stats.total_profissionais }}</span>
+        </div>
     </div>
-    <div class="stat-card">
-        <span class="stat-icon">📋</span>
-        <h3>Consultas</h3>
-        <p class="stat-number">{{ stats.total_consultas }}</p>
-        <a href="{{ url_for('listar_consultas') }}">Ver lista →</a>
+    <div class="stat-card" style="
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.6rem 1rem;
+        flex: 1 1 160px;
+        min-width: 140px;
+    ">
+        <span class="stat-icon" style="font-size: 1.2rem; line-height: 1;">📋</span>
+        <div style="display: flex; flex-direction: column; line-height: 1.2;">
+            <span style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.65; font-weight: 600;">Total Consultas</span>
+            <span class="stat-number" style="font-size: 1.3rem; font-weight: 700; margin: 0;">{{ stats.total_consultas }}</span>
+        </div>
     </div>
-    <div class="stat-card">
-        <span class="stat-icon">⏰</span>
-        <h3>Próximas 7 dias</h3>
-        <p class="stat-number">{{ stats.proximas_consultas }}</p>
-        <a href="{{ url_for('dashboard') }}">Ver agenda →</a>
+    <div class="stat-card" style="
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.6rem 1rem;
+        flex: 1 1 160px;
+        min-width: 140px;
+    ">
+        <span class="stat-icon" style="font-size: 1.2rem; line-height: 1;">⏰</span>
+        <div style="display: flex; flex-direction: column; line-height: 1.2;">
+            <span style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.65; font-weight: 600;">Próximos 7 dias</span>
+            <span class="stat-number" style="font-size: 1.3rem; font-weight: 700; margin: 0;">{{ stats.proximas_consultas }}</span>
+        </div>
     </div>
 </section>
 

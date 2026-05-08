@@ -14,18 +14,36 @@ class StatusConsulta(Enum):
 
 class Paciente:
     """Representa um paciente no sistema."""
-    
-    def __init__(self, nome, cpf, telefone, email=None, id=None):
+
+    def __init__(self, nome, cpf, telefone, email=None, id=None, preferencia_comunicacao='whatsapp'):
         self.id = id or str(uuid4())
         self.nome = nome
         self.cpf = cpf
         self.telefone = telefone
         self.email = email
+        self.preferencia_comunicacao = preferencia_comunicacao
         self.data_criacao = datetime.now()
-    
-    def __repr__(self):
-        return f"Paciente(id={self.id}, nome={self.nome}, cpf={self.cpf}, telefone={self.telefone})"
 
+    def __repr__(self):
+        return f"Paciente(id={self.id}, nome={self.nome}, cpf={self.cpf}, telefone={self.telefone}, preferencia_comunicacao={self.preferencia_comunicacao})"
+
+
+class Notificacao:
+    """Representa uma notificação agendada no sistema."""
+
+    def __init__(self, consulta_id, tipo, ferramenta, agendamento, titulo, descricao, status='agendada', id=None):
+        self.id = id or str(uuid4())
+        self.consulta_id = consulta_id
+        self.tipo = tipo # automatica, manual
+        self.ferramenta = ferramenta # sms, email, whatsapp, telegram
+        self.agendamento = agendamento # datetime
+        self.titulo = titulo
+        self.descricao = descricao
+        self.status = status # agendada, enviada, falha, cancelada
+        self.data_criacao = datetime.now()
+
+    def __repr__(self):
+        return f"Notificacao(id={self.id}, consulta_id={self.consulta_id}, tipo={self.tipo}, ferramenta={self.ferramenta}, status={self.status})"
 
 class Profissional:
     """Representa um profissional de saúde no sistema."""

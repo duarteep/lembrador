@@ -23,11 +23,13 @@
     <div class="form-row">
         <div class="form-group">
             <label for="especialidade">Especialidade Desejada *</label>
-            <input type="text" id="especialidade" name="especialidade" 
-                   placeholder="ex: Cardiologia" required class="form-control"
-                   onchange="carregarProfissionais()">
-        </div>
-        <div class="form-group">
+            <select id="especialidade" name="especialidade" required class="form-control" onchange="carregarProfissionais()">
+                <option value="">Selecione uma especialidade</option>
+                {% for esp in especialidades %}
+                <option value="{{ esp }}">{{ esp }}</option>
+                {% endfor %}
+            </select>
+        </div>        <div class="form-group">
             <label for="profissional_id">Profissional *</label>
             <select id="profissional_id" name="profissional_id" required class="form-control">
                 <option value="">Selecione um profissional</option>
@@ -38,7 +40,7 @@
     <div class="form-row">
         <div class="form-group">
             <label for="data_hora">Data e Hora *</label>
-            <input type="datetime-local" id="data_hora" name="data_hora" required class="form-control">
+            <input type="datetime-local" id="data_hora" name="data_hora" required class="form-control" step="1800">
         </div>
     </div>
 
@@ -102,16 +104,63 @@ function carregarProfissionais() {
         .catch(error => console.error('Erro:', error));
 }
 
+function arredondarParaMeiaHora(date) {
+    const minutos = date.getMinutes();
+    const resto = minutos % 30;
+    if (resto === 0) return date;
+
+    const ajuste = resto < 15 ? -resto : 30 - resto;
+    date.setMinutes(minutos + ajuste, 0, 0);
+    return date;
+}
+
+function validarHorario30Minutos() {
+    const dataInput = document.getElementById('data_hora');
+    if (!dataInput.value) return false;
+
+    const selected = new Date(dataInput.value);
+    if (selected.getMinutes() % 30 !== 0) {
+        alert('Selecione apenas horários com intervalos de 30 minutos. Ex: 09:00, 09:30, 10:00.');
+        dataInput.focus();
+        return false;
+    }
+
+    return true;
+}
+
+function ajustarHorarioSeNecessario() {
+    const dataInput = document.getElementById('data_hora');
+    if (!dataInput.value) return;
+
+    const selected = new Date(dataInput.value);
+    if (selected.getMinutes() % 30 !== 0) {
+        const ajustado = arredondarParaMeiaHora(selected);
+        dataInput.value = ajustado.toISOString().slice(0, 16);
+        alert('Horário ajustado para o intervalo de 30 minutos mais próximo.');
+    }
+}
+
 // Define data mínima para amanhã
 document.addEventListener('DOMContentLoaded', function() {
     const dataInput = document.getElementById('data_hora');
     const now = new Date();
     now.setDate(now.getDate() + 1);
-    now.setHours(14, 0); // 14:00
-    
+    now.setHours(14, 0);
+    now.setMinutes(0, 0, 0);
+
     const formatted = now.toISOString().slice(0, 16);
     dataInput.setAttribute('min', formatted);
     dataInput.value = formatted;
+    dataInput.step = 1800;
+
+    dataInput.addEventListener('blur', ajustarHorarioSeNecessario);
+
+    const form = document.getElementById('consultaForm');
+    form.addEventListener('submit', function(event) {
+        if (!validarHorario30Minutos()) {
+            event.preventDefault();
+        }
+    });
 });
 </script>
 {% endblock %}

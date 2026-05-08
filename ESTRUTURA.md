@@ -8,13 +8,14 @@ agendador-consultas/
 ├── 📄 Arquivos Principais (Backend)
 │   ├── app.py                     # Aplicação Flask
 │   ├── models.py                  # Modelos de dados
-│   ├── database.py                # Gerenciamento do BD (SQLite)
+│   ├── database.py                # Gerenciamento do BD (PostgreSQL)
 │   ├── utils.py                   # Funções utilitárias
-│   ├── config.py                  # Configurações
-│   └── run_web.py                 # Script para executar
+│   ├── utils_whatsapp.py          # Envio de mensagens WhatsApp
+│   ├── notificacao_scheduler.py   # Scheduler de notificações
+│   └── config.py                  # Configurações
 │
 ├── 📋 Dependências
-│   └── requirements-web.txt       # Dependências (Flask, Werkzeug)
+│   └── requirements.txt       # Dependências (Flask, Werkzeug)
 │
 ├── 🎨 Frontend - Templates HTML
 │   └── templates/
@@ -39,7 +40,7 @@ agendador-consultas/
 │       └── script.js              # JavaScript (AJAX, validações)
 │
 ├── 🗄️ Banco de Dados
-│   └── agendador.db              # SQLite (criado automaticamente)
+│   └── PostgreSQL                # Conexão configurada em config.py ou DATABASE_URL
 │       ├── pacientes             # Tabela de pacientes
 │       ├── profissionais         # Tabela de profissionais
 │       └── consultas             # Tabela de consultas
@@ -63,7 +64,7 @@ agendador-consultas/
 - Métodos utilitários
 
 #### `database.py` (~300 linhas)
-- Gerenciamento de conexão SQLite
+- Gerenciamento de conexão PostgreSQL
 - CRUD completo para cada entidade
 - Queries e filtros
 - Relacionamentos entre tabelas
@@ -75,11 +76,12 @@ agendador-consultas/
 - Parsing de strings
 - Tratamento de entrada
 
-#### `config.py` (~50 linhas)
-- Constantes da aplicação
-- Lista de especialidades
-- Configurações de validação
-- Mensagens padrão
+#### `notificacao_scheduler.py` (~140 linhas)
+- Scheduler que roda a cada 15 minutos
+- Verifica notificações pendentes na tabela notificacoes
+- Envia mensagens detalhadas via WhatsApp (data, horário, profissional, especialidade, status)
+- Marca notificações vencidas há mais de 30 minutos como falha
+- Atualiza status das notificações (enviada/falha)
 
 ### Backend
 
@@ -90,12 +92,6 @@ agendador-consultas/
 - Template rendering
 - Error handling (404, 500)
 - Context processors
-
-#### `run_web.py` (~100 linhas)
-- Script para executar a aplicação
-- Verificação de dependências
-- Criação de ambiente virtual
-- Instalação automática
 
 ### Frontend
 
@@ -128,19 +124,19 @@ agendador-consultas/
 - Formulário de agendamento
 - Busca dinâmica de paciente
 - Carregamento dinâmico de profissionais
-- Va� Estatísticas do Projeto
+- Validações Estatísticas do Projeto
 
 | Métrica | Valor |
 |---------|-------|
-| Linhas de Python | ~1.300 |
+| Linhas de Python | ~1.400 |
 | Linhas de HTML | ~600 |
 | Linhas de CSS | ~600 |
 | Linhas de JavaScript | ~150 |
-| Arquivos Totais | 20+ |
+| Arquivos Totais | 21+ |
 | Rotas HTTP | 25+ |
 | Templates | 13 |
 | API Endpoints | 6+ |
-| Tabelas BD | 3 |
+| Tabelas BD | 4 |
 
 ---
 
@@ -159,12 +155,12 @@ Utils.py (validações)
     ↓
 Models.py (objetos)
     ↓
-Database.py (SQLite)
+Database.py (PostgreSQL)
     ↓
-Banco de Dados (agendador.db) e detalhado
+Banco de Dados (PostgreSQL)
 - **README-WEB.md** - Documentação específica Web
 - **GUIA_WEB.md** - Quick start 5 minutos
-- **� Rotas Web
+## 🛣️ Rotas Web
 
 ### Rotas GET (Páginas)
 ```
@@ -194,7 +190,7 @@ POST /consultas/nova           → Agendar consulta
 GET  /api/stats                           → Estatísticas gerais
 GET  /api/paciente/cpf/<cpf>             → Buscar paciente
 GET  /api/profissionais/especialidade/<e> → Listar por especialidade
-PUT  /api/consultas/<id>/status          → Atualiz
+PUT  /api/consultas/<id>/status          → Atualizar status
 ### Tabela: consultas
 ```sql
 CREATE TABLE consultas (
@@ -240,21 +236,13 @@ DELETE /api/consultas/<id>/deletar       → Deletar consulta
 
 ## 📦 Instalação e Execução
 
-### CLI
-```bash
-# Sem deps externas!
-python main.py
-```
-
 ### Web
 ```bash
 # Instalar
-pip install -r requirements-web.txt
+pip install -r requirements.txt
 
 # Executar
 python app.py
-# ou
-python run_web.py
 ```
 
 ## 🎨 Design Responsivo (Web)
@@ -278,15 +266,15 @@ python run_web.py
 
 ## 📊 Estatísticas do Projeto
 
-| Métrica | CLI | Web | Total |
-|---------|-----|-----|-------|
-| Linhas de Python | 850 | 500 | 1,350 |
-| Linhas HTML | - | 600 | 600 |
-| Linhas CSS | - | 600 | 600 |
-| Linhas JavaScript | - | 100 | 100 |
-| Arquivos | 4 | 8 | 12+ |
-| Rotas | - | 25+ | 25+ |
-| Testes | - | - | 0 |
+| Métrica | Web |
+|---------|-----|
+| Linhas de Python | 500 |
+| Linhas HTML | 600 |
+| Linhas CSS | 600 |
+| Linhas JavaScript | 100 |
+| Arquivos | 8 |
+| Rotas | 25+ |
+| Testes | 0 |
 
 ## 🚀 Roadmap
 
@@ -295,7 +283,8 @@ python run_web.py
 - [x] Gerenciar profissionais
 - [x] Agendar consultas
 - [x] Dashboard
-- [x] CLI + Web
+- [x] Web
+- [x] Sistema de notificações automáticas via WhatsApp
 
 ### Phase 2 (📋 Aguardando)
 - [ ] Autenticação de usuários
@@ -339,4 +328,4 @@ Esta é uma aplicação **pronta para produção** com:
 
 **Status**: ✅ Pronto para uso
 **Versão**: 2.0 (Web)
-**Última atualização**: 2024
+**Última atualização**: 2026

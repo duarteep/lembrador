@@ -13,7 +13,7 @@ Uma aplicação web moderna para gerenciar agendamento de consultas médicas/odo
 - ✅ **Notas e Observações**: Adicionar informações às consultas
 - ✅ **API REST**: Endpoints JSON para integração
 - ✅ **Responsivo**: Funciona em Desktop, Tablet e Smartphone
-- ✅ **Persistência de Dados**: Banco de dados SQLite
+- ✅ **Persistência de Dados**: Banco de dados PostgreSQL
 
 ## 📋 Requisitos
 
@@ -26,13 +26,13 @@ Uma aplicação web moderna para gerenciar agendamento de consultas médicas/odo
 ### 1. Clone o repositório ou extraia os arquivos
 
 ```bash
-cd agendador-consultas
+cd lembrador
 ```
 
 ### 2. Instale as dependências
 
 ```bash
-pip install -r requirements-web.txt
+pip install -r requirements.txt
 ```
 
 ## 🎯 Como Usar
@@ -84,20 +84,25 @@ A aplicação web fornece uma interface intuitiva com menu de navegação:
   - Cancelar consulta
   - Deletar (se necessário)
 
+### 4. Executar o Scheduler de Notificações (Opcional)
+
+```bash
+python notificacao_scheduler.py
+```
+
+Este script roda em background verificando notificações pendentes a cada 15 minutos e enviando via WhatsApp automaticamente. Notificações vencidas há mais de 30 minutos são automaticamente marcadas como falha para evitar spam. As mensagens incluem detalhes completos da consulta (data, horário, profissional, especialidade, status).
+
 ## 📁 Estrutura do Projeto
 
 ```
 agendador-consultas/
-├── main.py              # Aplicação principal com interface
-├── models.py            # Classes de dados (Paciente, Profissional, Consulta)
 ├── app.py                       # Aplicação Flask
-├── models.py                    # Classes de dados
+├── models.py                    # Classes de dados (Paciente, Profissional, Consulta)
 ├── database.py                  # Gerenciamento do banco de dados
 ├── utils.py                     # Funções utilitárias
 ├── config.py                    # Configurações
-├── requirements-web.txt         # Dependências
-├── run_web.py                   # Script para executar
-├── agendador.db                 # Banco de dados (criado automaticamente)
+├── requirements.txt         # Dependências
+├── PostgreSQL                  # Banco de dados configurado em config.py ou DATABASE_URL
 ├── templates/                   # Templates HTML
 │   ├── base.html
 │   ├── index.html
@@ -144,7 +149,7 @@ A aplicação trata automaticamente:
 
 ## 💾 Banco de Dados
 
-O banco de dados SQLite (`agendador.db`) é criado automaticamente na primeira execução.
+A aplicação utiliza PostgreSQL, com conexão configurada em `config.py` ou pela variável de ambiente `DATABASE_URL`.
 
 ### Tabelas:
 - `pacientes` - Armazena informações de pacientes
@@ -181,8 +186,6 @@ A aplicação fornece endpoints JSON para integração:
 - `PUT /api/consultas/<id>/status` - Alterar status
 - `PUT /api/consultas/<id>/notas` - Adicionar notas
 - `DELETE /api/consultas/<id>/deletar` - Deletar consulta
-- `profissionais` - Armazena profissionais de saúde
-- `consultas` - Armazena agendamentos
 
 ## 🔄 Fluxo de Agendamento
 
@@ -190,9 +193,9 @@ A aplicação fornece endpoints JSON para integração:
 1. Selecionar Paciente (por CPF)
 2. Selecionar Especialidade
 3. Escolher Profissional
-4. Informar oduleNotFoundError: No module named 'flask'"
+4. Informar o motivo
 ```bash
-pip install -r requirements-web.txt
+pip install -r requirements.txt
 ```
 
 ### Erro: "Address already in use"
@@ -204,7 +207,8 @@ app.run(port=5001)
 ### Erro: "CPF já cadastrado"
 Este CPF já existe no sistema. Use outro ou consulte o paciente existente.
 
-### Erro: "Data/hoUso
+### Erro: "Data/hora inválida"
+A data deve ser futura. Escolha uma data e hora no futuro.
 
 ### Adicionar Paciente via Web
 1. Navegue para: http://localhost:5000/pacientes/novo
@@ -262,6 +266,7 @@ git push heroku main
 - [ ] Integração com calendários
 - [ ] Notificações push
 - [ ] App mobile
+- [x] Sistema de notificações automáticas via WhatsApp (notificacao_scheduler.py)
 
 ## 📄 Licença
 
@@ -275,31 +280,6 @@ Agendador de Consultas - Versão Web 2.0
 
 **Versão**: 2.0 (Web)  
 **Status**: Pronto para Produção ✅  
-**Última atualização**: 2024
-
-Para suporte, consulte os arquivos de documentação no repositó
-## 🚀 Melhorias Futuras
-
-- [ ] Interface gráfica (GUI com Tkinter)
-- [ ] Envio de lembretes por email/SMS
-- [ ] Relatórios em PDF
-- [ ] API REST
-- [ ] Interface web (Flask/Django)
-- [ ] Sincronização entre dispositivos
-- [ ] Recorrência automática de consultas
-- [ ] Sistema de pagamentos
-
-## 📄 Licença
-
-Este projeto é fornecido como está, para uso livre.
-
-## 👨‍💻 Autor
-
-Desenvolvido como aplicação educacional em Python.
-
----
-
-**Versão**: 1.0  
-**Última atualização**: 2024
+**Última atualização**: 2026
 
 Para suporte ou dúvidas, revise a documentação do código ou adicione mais funcionalidades conforme necessário.

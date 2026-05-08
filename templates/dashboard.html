@@ -5,70 +5,142 @@
 {% block content %}
 <div class="page-header">
     <h1>📊 Dashboard</h1>
-    <p>Acompanhe as próximas consultas</p>
+    <p>Acompanhe as próximas consultas da semana</p>
 </div>
 
-<section class="stats-grid">
-    <div class="stat-card">
-        <span class="stat-icon">👥</span>
-        <h3>Pacientes</h3>
-        <p class="stat-number">{{ stats.total_pacientes }}</p>
+<section class="stats-grid" style="
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+">
+    <div class="stat-card" style="
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.6rem 1rem;
+        flex: 1 1 160px;
+        min-width: 140px;
+    ">
+        <span class="stat-icon" style="font-size: 1.2rem; line-height: 1;">👥</span>
+        <div style="display: flex; flex-direction: column; line-height: 1.2;">
+            <span style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.65; font-weight: 600;">Pacientes</span>
+            <span class="stat-number" style="font-size: 1.3rem; font-weight: 700; margin: 0;">{{ stats.total_pacientes }}</span>
+        </div>
     </div>
-    <div class="stat-card">
-        <span class="stat-icon">👨‍⚕️</span>
-        <h3>Profissionais</h3>
-        <p class="stat-number">{{ stats.total_profissionais }}</p>
+    <div class="stat-card" style="
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.6rem 1rem;
+        flex: 1 1 160px;
+        min-width: 140px;
+    ">
+        <span class="stat-icon" style="font-size: 1.2rem; line-height: 1;">👨‍⚕️</span>
+        <div style="display: flex; flex-direction: column; line-height: 1.2;">
+            <span style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.65; font-weight: 600;">Profissionais</span>
+            <span class="stat-number" style="font-size: 1.3rem; font-weight: 700; margin: 0;">{{ stats.total_profissionais }}</span>
+        </div>
     </div>
-    <div class="stat-card">
-        <span class="stat-icon">📋</span>
-        <h3>Total Consultas</h3>
-        <p class="stat-number">{{ stats.total_consultas }}</p>
+    <div class="stat-card" style="
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.6rem 1rem;
+        flex: 1 1 160px;
+        min-width: 140px;
+    ">
+        <span class="stat-icon" style="font-size: 1.2rem; line-height: 1;">📋</span>
+        <div style="display: flex; flex-direction: column; line-height: 1.2;">
+            <span style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.65; font-weight: 600;">Total Consultas</span>
+            <span class="stat-number" style="font-size: 1.3rem; font-weight: 700; margin: 0;">{{ stats.total_consultas }}</span>
+        </div>
     </div>
-    <div class="stat-card">
-        <span class="stat-icon">⏰</span>
-        <h3>Próximos 7 dias</h3>
-        <p class="stat-number">{{ stats.proximas_consultas }}</p>
+    <div class="stat-card" style="
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.6rem 1rem;
+        flex: 1 1 160px;
+        min-width: 140px;
+    ">
+        <span class="stat-icon" style="font-size: 1.2rem; line-height: 1;">⏰</span>
+        <div style="display: flex; flex-direction: column; line-height: 1.2;">
+            <span style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.65; font-weight: 600;">Próximos 7 dias</span>
+            <span class="stat-number" style="font-size: 1.3rem; font-weight: 700; margin: 0;">{{ stats.proximas_consultas }}</span>
+        </div>
     </div>
 </section>
 
 <section class="dashboard-section">
-    <h2>📅 Próximas Consultas (7 dias)</h2>
-    
-    {% if consultas %}
-        <div class="table-responsive">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Data/Hora</th>
-                        <th>Paciente</th>
-                        <th>Profissional</th>
-                        <th>Motivo</th>
-                        <th>Status</th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for consulta in consultas %}
-                        <tr>
-                            <td><strong>{{ consulta.data_hora }}</strong></td>
-                            <td>{{ consulta.paciente }}</td>
-                            <td>{{ consulta.profissional }}</td>
-                            <td>{{ consulta.motivo }}</td>
-                            <td><span class="badge status-{{ consulta.status }}">{{ consulta.status }}</span></td>
-                            <td>
-                                <a href="{{ url_for('detalhe_consulta', consulta_id=consulta.id) }}" class="btn-small">
-                                    Ver Detalhes
-                                </a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h2 style="margin: 0;">📅 Calendário da Semana</h2>
+        <div class="calendar-nav" style="display: flex; gap: 0.5rem;">
+            <a href="{{ url_for('dashboard', offset=offset-1) }}" class="btn btn-small" style="padding: 0.3rem 0.6rem;">&laquo; Semana Anterior</a>
+            {% if offset != 0 %}
+            <a href="{{ url_for('dashboard', offset=0) }}" class="btn btn-small btn-secondary" style="padding: 0.3rem 0.6rem;">Semana Atual</a>
+            {% endif %}
+            <a href="{{ url_for('dashboard', offset=offset+1) }}" class="btn btn-small" style="padding: 0.3rem 0.6rem;">Próxima Semana &raquo;</a>
         </div>
-    {% else %}
+    </div>
+    
+    <div class="calendar-week">
+        {% for dia in semana %}
+            <div class="day-column">
+                <div class="day-header">
+                    <h3>{{ dia.data_formatada }}</h3>
+                    <p class="day-name">{{ dia.dia_semana }}</p>
+                </div>
+                
+                <div class="day-content">
+                    {% if dia.consultas %}
+                        {% for consulta in dia.consultas %}
+                            <div class="consulta-card status-{{ consulta.status }}" style="padding: 0.3rem 0.5rem;">
+                                <div class="consulta-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.2rem;">
+                                    <span class="hora" style="font-size: 0.8rem; font-weight: 600;">⏰ {{ consulta.hora }}</span>
+                                </div>
+                                
+                                <div class="consulta-body" style="display: flex; flex-direction: column; gap: 0.1rem; margin-bottom: 0.2rem;">
+                                    <div class="consulta-info" style="display: flex; gap: 0.3rem; align-items: baseline;">
+                                        <p class="label" style="font-size: 0.7rem; opacity: 0.6; margin: 0; white-space: nowrap;">👤</p>
+                                        <p class="value" style="font-size: 0.75rem; margin: 0; font-weight: 500;">{{ consulta.paciente }}</p>
+                                    </div>
+                                    
+                                    <div class="consulta-info" style="display: flex; gap: 0.3rem; align-items: baseline;">
+                                        <p class="label" style="font-size: 0.7rem; opacity: 0.6; margin: 0; white-space: nowrap;">👨‍⚕️</p>
+                                        <p class="value" style="font-size: 0.75rem; margin: 0;">{{ consulta.profissional }}</p>
+                                    </div>
+                                    
+                                    <div class="consulta-info" style="display: flex; gap: 0.3rem; align-items: baseline;">
+                                        <p class="label" style="font-size: 0.7rem; opacity: 0.6; margin: 0; white-space: nowrap;">🏥</p>
+                                        <p class="value" style="font-size: 0.7rem; margin: 0; opacity: 0.8;">{{ consulta.especialidade }}</p>
+                                    </div>
+                                    <div class="consulta-info" style="display: flex; gap: 0.3rem; align-items: baseline; margin-top: 0.1rem;">
+                                        <span class="badge status-{{ consulta.status }}" style="font-size: 0.6rem; padding: 0.1rem 0.3rem;">{{ consulta.status }}</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="consulta-footer">
+                                    <a href="{{ url_for('detalhe_consulta', consulta_id=consulta.id) }}" class="btn-small" style="font-size: 0.65rem; padding: 0.15rem 0.4rem;">
+                                        Detalhes
+                                    </a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="empty-day">
+                            <p>Sem consultas</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    
+    {% if stats.proximas_consultas == 0 %}
         <div class="empty-state">
             <span class="empty-icon">📭</span>
-            <p>Nenhuma consulta nos próximos 7 dias</p>
+            <p>Nenhuma consulta agendada para os próximos 7 dias</p>
             <a href="{{ url_for('nova_consulta') }}" class="btn btn-primary">Agendar Nova Consulta</a>
         </div>
     {% endif %}

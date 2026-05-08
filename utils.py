@@ -49,6 +49,7 @@ def formatar_cpf(cpf):
 def validar_data_hora(data_str):
     """Valida e converte string de data/hora para datetime."""
     formatos = [
+        "%Y-%m-%dT%H:%M",
         "%d/%m/%Y %H:%M",
         "%d/%m/%Y",
         "%Y-%m-%d %H:%M",
@@ -66,48 +67,3 @@ def validar_data_hora(data_str):
             continue
     
     return None
-
-
-def limpar_tela():
-    """Limpa a tela do console."""
-    import os
-    os.system('cls' if os.name == 'nt' else 'clear')
-
-
-def exibir_menu(opcoes):
-    """Exibe um menu e retorna a opção selecionada."""
-    print("\n" + "="*50)
-    for i, opcao in enumerate(opcoes, 1):
-        print(f"{i}. {opcao}")
-    print("="*50)
-    
-    while True:
-        try:
-            escolha = int(input("Escolha uma opção: "))
-            if 1 <= escolha <= len(opcoes):
-                return escolha
-            print("Opção inválida!")
-        except ValueError:
-            print("Digite um número válido!")
-
-
-def entrada_segura(mensagem, tipo=str, validador=None):
-    """Obtém entrada do usuário com validação."""
-    while True:
-        try:
-            valor = input(f"{mensagem}: ").strip()
-            
-            if not valor:
-                print("Campo obrigatório!")
-                continue
-            
-            if tipo == int:
-                valor = int(valor)
-            
-            if validador and not validador(valor):
-                print("Valor inválido!")
-                continue
-            
-            return valor
-        except ValueError:
-            print(f"Digite um {tipo.__name__} válido!")

@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Confirmar Consulta - Agendador de Consultas{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>✅ Confirmar Consulta</h1>
+    <a href="{{ url_for('listar_consultas') }}" class="btn btn-secondary">← Voltar</a>
+</div>
+
+<div class="detail-card">
+    <div class="card-section">
+        <h2>Paciente</h2>
+        <p>{{ paciente.nome }}</p>
+        <p><strong>Telefone:</strong> {{ paciente.telefone }}</p>
+    </div>
+
+    <div class="card-section">
+        <h2>Consulta</h2>
+        <div class="info-grid">
+            <div class="info-item">
+                <label>Data/Hora</label>
+                <p>{{ consulta.data_hora.strftime('%d/%m/%Y às %H:%M') }}</p>
+            </div>
+            <div class="info-item">
+                <label>Profissional</label>
+                <p>{{ profissional.nome }} ({{ profissional.especialidade }})</p>
+            </div>
+            <div class="info-item">
+                <label>Status</label>
+                <p>{{ consulta.status.value.upper() }}</p>
+            </div>
+            <div class="info-item">
+                <label>Motivo</label>
+                <p>{{ consulta.motivo }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-section">
+        {% if consulta.status.value != 'confirmada' and consulta.status.value != 'cancelada' %}
+        <p>Por favor, confirme ou cancele esta consulta abaixo.</p>
+        <div class="action-buttons">
+            <button onclick="atualizarStatus('confirmada')" class="btn btn-primary">✓ Confirmar Consulta</button>
+            <button onclick="atualizarStatus('cancelada')" class="btn btn-danger">✗ Cancelar Consulta</button>
+        </div>
+        {% else %}
+        <p>Esta consulta já está <strong>{{ consulta.status.value }}</strong>.</p>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+const consultaId = '{{ consulta.id }}';
+
+function atualizarStatus(novoStatus) {
+    const mensagem = novoStatus === 'confirmada'
+        ? 'Deseja confirmar esta consulta?'
+        : 'Deseja cancelar esta consulta?';
+
+    if (!confirm(mensagem)) return;
+
+    fetch(`/api/consultas/${consultaId}/status`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ status: novoStatus })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.sucesso) {
+            alert('Status atualizado com sucesso!');
+            window.location.reload();
+        } else {
+            alert('Erro: ' + data.erro);
+        }
+    })
+    .catch(error => console.error('Erro:', error));
+}
+</script>
+{% endblock %}

@@ -1,7 +1,14 @@
 """Arquivo de configuração da aplicação."""
+import os
 
 # Banco de dados
-DATABASE_NAME = "agendador.db"
+DATABASE_HOST = "localhost"
+DATABASE_PORT = 5432
+DATABASE_NAME = "agendador"
+DATABASE_USER = "your_username"
+DATABASE_PASSWORD = "your_password"
+DATABASE_URL = os.environ.get('DATABASE_URL')
+BASE_URL = os.environ.get('BASE_URL', 'http://localhost:5000')
 
 # Especialidades comuns
 ESPECIALIDADES = [

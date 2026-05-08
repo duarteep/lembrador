@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Agendador de Consultas{% endblock %}</title>
+    <title>{% block title %}Lembrador de Consultas{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
@@ -12,27 +12,27 @@
         <div class="container">
             <div class="navbar-brand">
                 <a href="{{ url_for('index') }}" class="logo">
-                    <span class="logo-icon">📅</span> Agendador
+                    <span class="logo-icon">📅🚨</span> Lembrador de Consultas
                 </a>
             </div>
             <ul class="navbar-menu">
                 <li><a href="{{ url_for('dashboard') }}" class="nav-link">Dashboard</a></li>
                 <li class="dropdown">
-                    <a href="#" class="nav-link">Pacientes</a>
+                    <a href="{{ url_for('listar_pacientes') }}" class="nav-link">Pacientes</a>
                     <div class="dropdown-menu">
                         <a href="{{ url_for('listar_pacientes') }}">Listar</a>
                         <a href="{{ url_for('novo_paciente') }}">Novo</a>
                     </div>
                 </li>
                 <li class="dropdown">
-                    <a href="#" class="nav-link">Profissionais</a>
+                    <a href="{{ url_for('listar_profissionais') }}" class="nav-link">Profissionais</a>
                     <div class="dropdown-menu">
                         <a href="{{ url_for('listar_profissionais') }}">Listar</a>
                         <a href="{{ url_for('novo_profissional') }}">Novo</a>
                     </div>
                 </li>
                 <li class="dropdown">
-                    <a href="#" class="nav-link">Consultas</a>
+                    <a href="{{ url_for('listar_consultas') }}" class="nav-link">Consultas</a>
                     <div class="dropdown-menu">
                         <a href="{{ url_for('listar_consultas') }}">Listar</a>
                         <a href="{{ url_for('nova_consulta') }}">Agendar</a>
@@ -64,7 +64,7 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2024 Agendador de Consultas. Todos os direitos reservados.</p>
+            <p>&copy; 2026 Lembrador de Consultas. Todos os direitos reservados. Projeto Integrador Univesp</p>
         </div>
     </footer>
 
