@@ -1,5 +1,11 @@
 """Aplicação Flask para Agendador de Consultas Web."""
+import os
+import sys
 from flask import Flask, render_template, request, jsonify, redirect, url_for, flash
+
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, ROOT_DIR)
+
 from database import Database
 from models import Paciente, Profissional, Consulta, StatusConsulta, Notificacao
 from utils import (
@@ -10,7 +16,12 @@ from datetime import datetime
 import json
 import math
 
-app = Flask(__name__)
+app = Flask(
+    __name__,
+    template_folder=os.path.join(ROOT_DIR, 'templates'),
+    static_folder=os.path.join(ROOT_DIR, 'static'),
+    static_url_path='/static'
+)
 app.secret_key = 'seu-chave-secreta-aqui'  # Substitua por uma chave segura em produção
 db = Database()
 
