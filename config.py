@@ -7,7 +7,7 @@ DATABASE_PORT = 5432
 DATABASE_NAME = "agendador"
 DATABASE_USER = "your_username"
 DATABASE_PASSWORD = "your_password"
-DATABASE_URL = os.environ.get('DATABASE_URL')
+DATABASE_SUPABASE_URL = os.environ.get('DATABASE_SUPABASE_URL')
 BASE_URL = os.environ.get('BASE_URL', 'http://localhost:5000')
 
 # Especialidades comuns

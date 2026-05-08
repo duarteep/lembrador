@@ -102,7 +102,7 @@ agendador-consultas/
 ├── utils.py                     # Funções utilitárias
 ├── config.py                    # Configurações
 ├── requirements.txt         # Dependências
-├── PostgreSQL                  # Banco de dados configurado em config.py ou DATABASE_URL
+├── PostgreSQL                  # Banco de dados configurado em config.py ou DATABASE_SUPABASE_URL
 ├── templates/                   # Templates HTML
 │   ├── base.html
 │   ├── index.html
@@ -149,7 +149,7 @@ A aplicação trata automaticamente:
 
 ## 💾 Banco de Dados
 
-A aplicação utiliza PostgreSQL, com conexão configurada em `config.py` ou pela variável de ambiente `DATABASE_URL`.
+A aplicação utiliza PostgreSQL, com conexão configurada em `config.py` ou pela variável de ambiente `DATABASE_SUPABASE_URL`.
 
 ### Tabelas:
 - `pacientes` - Armazena informações de pacientes
