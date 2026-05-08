@@ -1,22 +1,67 @@
 """Aplicação Flask para Agendador de Consultas Web."""
-from flask import Flask, render_template, request, jsonify, redirect, url_for, flash
+import os
+
+from flask import Flask, render_template, request, jsonify, redirect, url_for, flash, session
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from database import Database
 from models import Paciente, Profissional, Consulta, StatusConsulta, Notificacao
 from utils import (
     validar_cpf, validar_email, validar_telefone, formatar_data_hora,
     formatar_telefone, formatar_cpf, validar_data_hora
 )
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 import math
 
 app = Flask(__name__)
-app.secret_key = 'seu-chave-secreta-aqui'  # Substitua por uma chave segura em produção
+app.secret_key = 'secret-padrao'  # Substitua por uma chave segura em produção
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=1)  # Sessão expira em 1 hora
+senha_padrao = os.environ.get('SENHA_PADRAO', 'senha-padrao')  # Substitua por uma senha segura ou use variável de ambiente
+
+# Configuração do Flask-Login
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+# Usuário simples (hardcoded para demonstração)
+class User(UserMixin):
+    def __init__(self, id):
+        self.id = id
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User(user_id)
+
 db = Database()
+
+# ===== ROTAS DE AUTENTICAÇÃO =====
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    """Página de login."""
+    if request.method == 'POST':
+        password = request.form.get('password')
+        if password == senha_padrao:
+            user = User('admin')
+            login_user(user, remember=True)
+            session.permanent = True  # Sessão permanente por 1 hora
+            next_page = request.args.get('next')
+            return redirect(next_page or url_for('index'))
+        else:
+            flash('Senha incorreta', 'error')
+    return render_template('login.html')
+
+@app.route('/logout')
+@login_required
+def logout():
+    """Logout do usuário."""
+    logout_user()
+    return redirect(url_for('login'))
 
 # ===== ROTAS PRINCIPAIS =====
 
 @app.route('/')
+@login_required
 def index():
     """Página inicial - Dashboard."""
     stats = {
@@ -29,6 +74,7 @@ def index():
 
 
 @app.route('/dashboard')
+@login_required
 def dashboard():
     """Dashboard com próximas consultas organizadas por semana."""
     from datetime import datetime, timedelta
@@ -100,6 +146,7 @@ def dashboard():
 # ===== ROTAS DE PACIENTES =====
 
 @app.route('/pacientes')
+@login_required
 def listar_pacientes():
     """Lista todos os pacientes."""
     pacientes = db.listar_pacientes()
@@ -118,6 +165,7 @@ def listar_pacientes():
 
 
 @app.route('/pacientes/novo', methods=['GET', 'POST'])
+@login_required
 def novo_paciente():
     """Formulário para novo paciente."""
     if request.method == 'POST':
@@ -158,6 +206,7 @@ def novo_paciente():
 
 
 @app.route('/pacientes/<paciente_id>')
+@login_required
 def detalhe_paciente(paciente_id):
     """Página de detalhes do paciente."""
     paciente = db.obter_paciente(paciente_id)
@@ -185,6 +234,7 @@ def detalhe_paciente(paciente_id):
 # ===== ROTAS DE PROFISSIONAIS =====
 
 @app.route('/profissionais')
+@login_required
 def listar_profissionais():
     """Lista todos os profissionais."""
     profissionais = db.listar_profissionais()
@@ -209,6 +259,7 @@ ESPECIALIDADES = [
 ]
 
 @app.route('/profissionais/novo', methods=['GET', 'POST'])
+@login_required
 def novo_profissional():
     """Formulário para novo profissional."""
     if request.method == 'POST':
@@ -238,6 +289,7 @@ def novo_profissional():
 
 
 @app.route('/profissionais/<prof_id>')
+@login_required
 def detalhe_profissional(prof_id):
     """Página de detalhes do profissional."""
     profissional = db.obter_profissional(prof_id)
@@ -265,6 +317,7 @@ def detalhe_profissional(prof_id):
 # ===== ROTAS DE CONSULTAS =====
 
 @app.route('/consultas')
+@login_required
 def listar_consultas():
     """Lista todas as consultas com paginação."""
     # Captura os parâmetros da URL
@@ -315,6 +368,7 @@ def listar_consultas():
 
 
 @app.route('/consultas/nova', methods=['GET', 'POST'])
+@login_required
 def nova_consulta():
     """Formulário para nova consulta."""
     if request.method == 'POST':
@@ -396,6 +450,7 @@ def nova_consulta():
 
 
 @app.route('/consultas/<consulta_id>')
+@login_required
 def detalhe_consulta(consulta_id):
     """Página de detalhes da consulta."""
     consulta = db.obter_consulta(consulta_id)
@@ -413,6 +468,7 @@ def detalhe_consulta(consulta_id):
                          notificacoes=notificacoes)
 
 @app.route('/consultas/<consulta_id>/confirmacao')
+@login_required
 def confirmar_consulta(consulta_id):
     """Página simplificada para confirmar ou cancelar a consulta."""
     consulta = db.obter_consulta(consulta_id)
@@ -428,6 +484,7 @@ def confirmar_consulta(consulta_id):
                          profissional=profissional)
 
 @app.route('/api/notificacoes/<notificacao_id>/cancelar', methods=['POST'])
+@login_required
 def api_cancelar_notificacao(notificacao_id):
     """API para cancelar notificação."""
     try:
@@ -438,6 +495,7 @@ def api_cancelar_notificacao(notificacao_id):
 
 
 @app.route('/api/consultas/<consulta_id>/status', methods=['PUT'])
+@login_required
 def atualizar_status(consulta_id):
     """API para atualizar status da consulta."""
     try:
@@ -454,6 +512,7 @@ def atualizar_status(consulta_id):
 
 
 @app.route('/api/consultas/<consulta_id>/notas', methods=['PUT'])
+@login_required
 def atualizar_notas(consulta_id):
     """API para atualizar notas da consulta."""
     try:
@@ -467,6 +526,7 @@ def atualizar_notas(consulta_id):
 
 
 @app.route('/api/consultas/<consulta_id>/deletar', methods=['DELETE'])
+@login_required
 def deletar_consulta(consulta_id):
     """API para deletar consulta."""
     try:
@@ -479,6 +539,7 @@ def deletar_consulta(consulta_id):
 # ===== API ENDPOINTS =====
 
 @app.route('/api/profissionais/especialidade/<especialidade>')
+@login_required
 def api_profissionais_especialidade(especialidade):
     """API para obter profissionais por especialidade."""
     profissionais = db.listar_profissionais(especialidade=especialidade)
@@ -491,6 +552,7 @@ def api_profissionais_especialidade(especialidade):
 
 
 @app.route('/api/paciente/cpf/<cpf>')
+@login_required
 def api_obter_paciente(cpf):
     """API para obter paciente pelo CPF."""
     paciente = db.obter_paciente_cpf(cpf)
@@ -505,6 +567,7 @@ def api_obter_paciente(cpf):
 
 
 @app.route('/api/stats')
+@login_required
 def api_stats():
     """API para obter estatísticas."""
     return jsonify({
